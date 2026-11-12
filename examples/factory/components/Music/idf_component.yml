@@ -1,0 +1,4 @@
+dependencies:
+  idf: '>=5.4'
+  espressif/esp_audio_simple_player: '0.9.6'
+  espressif/esp_codec_dev: '1.5.10'
