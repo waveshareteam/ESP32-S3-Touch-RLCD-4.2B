@@ -246,7 +246,9 @@ sdmmc_card_t *bsp_sdcard = NULL;
 static esp_lcd_touch_handle_t tp = NULL;
 static esp_lcd_panel_handle_t panel_handle = NULL;
 static esp_lcd_panel_io_handle_t io_handle = NULL;
-static uint8_t lvgl_i1_fb[BSP_LCD_H_RES * BSP_LCD_V_RES / 8 + 8];
+/* LVGL checks pointer alignment even for packed monochrome buffers. */
+static uint8_t lvgl_i1_fb[BSP_LCD_H_RES * BSP_LCD_V_RES / 8 + 8]
+    __attribute__((aligned(LV_DRAW_BUF_ALIGN)));
 static uint8_t st7305_tx_fb[BSP_LCD_H_RES * BSP_LCD_V_RES / 8];
 static uint8_t st7305_pair_lut[4][4][256];
 static uint16_t st7305_src_byte_x[BSP_LCD_H_RES / 2];
