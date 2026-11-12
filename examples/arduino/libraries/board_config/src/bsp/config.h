@@ -1,0 +1,9 @@
+#include "rlcd_arduino_config.h"
+#pragma once
+
+/**************************************************************************************************
+ * BSP configuration
+ **************************************************************************************************/
+#if !defined(BSP_CONFIG_NO_GRAPHIC_LIB)
+#define BSP_CONFIG_NO_GRAPHIC_LIB (0)
+#endif
