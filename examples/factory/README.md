@@ -18,6 +18,8 @@ Use ESP-IDF 6.0.2 and run `idf.py build flash monitor` from this directory.
 
 The monochrome desktop appears; tap an icon to open an application.
 
+Display Test repeats full-screen black for 10 seconds and white for 5 seconds; double-tap anywhere to exit.
+
 ## Troubleshooting
 
 Network applications require Internet access. The reflective display requires ambient light and has no backlight.

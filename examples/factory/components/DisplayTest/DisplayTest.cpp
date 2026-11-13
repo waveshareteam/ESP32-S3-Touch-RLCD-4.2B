@@ -1,13 +1,15 @@
 /* SPDX-FileCopyrightText: 2026 Waveshare
  * SPDX-License-Identifier: Apache-2.0
- * One-second color cycling adapted from the C5-3.5 Display Test. */
+ * Full-screen black/white cycling for panel color inspection. */
 #include "DisplayTest.hpp"
 #include "esp_log.h"
 #include <new>
 
 LV_IMAGE_DECLARE(img_app_display_test);
 namespace {
-constexpr uint32_t COLOR_PERIOD_MS = 1000, DOUBLE_TAP_MS = 400;
+constexpr uint32_t BLACK_PERIOD_MS = 10000;
+constexpr uint32_t WHITE_PERIOD_MS = 5000;
+constexpr uint32_t DOUBLE_TAP_MS = 400;
 esp_brookesia::systems::phone::App::Config fullscreen_config()
 {
     auto config = esp_brookesia::systems::phone::App::Config::SIMPLE_CONSTRUCTOR(
@@ -41,9 +43,9 @@ bool DisplayTest::run()
     lv_obj_remove_flag(root_, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN | LV_OBJ_FLAG_GESTURE_BUBBLE);
     lv_obj_add_flag(root_, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_PRESS_LOCK);
     lv_obj_add_event_cb(root_, touchEvent, LV_EVENT_SHORT_CLICKED, this);
-    timer_ = lv_timer_create(cycle, COLOR_PERIOD_MS, this);
+    timer_ = lv_timer_create(cycle, BLACK_PERIOD_MS, this);
     if (!timer_) { close(); return false; }
-    ESP_LOGI("display_test", "Black/white, 1 s each; LVGL double tap anywhere to exit");
+    ESP_LOGI("display_test", "Black 10 s / white 5 s; LVGL double tap anywhere to exit");
     return true;
 }
 void DisplayTest::cycle(lv_timer_t *timer)
@@ -51,6 +53,7 @@ void DisplayTest::cycle(lv_timer_t *timer)
     auto *app = static_cast<DisplayTest *>(lv_timer_get_user_data(timer));
     app->white_ = !app->white_;
     lv_obj_set_style_bg_color(app->root_, app->white_ ? lv_color_white() : lv_color_black(), 0);
+    lv_timer_set_period(timer, app->white_ ? WHITE_PERIOD_MS : BLACK_PERIOD_MS);
 }
 void DisplayTest::touchEvent(lv_event_t *event)
 {
