@@ -2,255 +2,250 @@
 
 [English](README.md) | [简体中文](README_ZH.md)
 
-This guide describes the factory firmware built from this directory. Devices supplied with this firmware are ready to use; customers do not need to install a development environment or compile the project.
+Connect USB power to try 11 apps, including drawing, photos, music, voice chat, and hardware tests. This guide starts with your first power-on and explains how to use each app.
 
-## 1. Getting Started
+## 1. Try This First
 
-### What you need
+1. Place the board somewhere well lit, then connect USB power. The screen **has no backlight** and needs ambient light to be readable.
+2. Wait for the app icons to appear. Tap **Drawing**, then draw a few lines with your finger in the blank area.
+3. Tap **Clear** at the upper right. The canvas should become blank. Tap **Back** at the upper left to return to the desktop.
+4. Swipe left on the desktop to find **Button Test** on the second page. Press and release the board's Custom and BOOT buttons. Both items should show PASS.
+5. Tap the upper-right back arrow to return to the desktop. You can now connect to Wi-Fi or try another offline app.
 
-- An ESP32-S3-Touch-RLCD-4.2B and a USB power cable. Flashing requires a cable that also supports data transfer.
-- Ambient light: the 400×300 black-and-white reflective LCD **has no backlight**. Poor visibility in darkness does not mean the device is off.
-- A FAT32 microSD card for photos or music. Other functions do not require a card.
-- A compatible speaker for music, recording playback, or voice chat.
-- An Internet-connected **2.4 GHz Wi-Fi** network for weather, network time, or voice chat.
+**If you cannot find an app, swipe left or right on the desktop.** Page one contains Drawing, AIChats, Weather, Music, 2048, Photos, Sensor, and Settings. Page two contains Button Test, Display Test, and Mic Test.
 
-### First power-on
+### What do you need for each activity?
 
-1. Connect USB power and wait for the application desktop.
-2. Tap an icon to open an app. Swipe left or right on the desktop to change pages.
-3. To connect to the Internet, open **Settings → Network setup** and follow Section 3.
-4. For photos or music, prepare the SD card as described in Section 4.
-5. Most apps close using the upper-right back arrow. Full-screen Photos and Display Test use the gestures listed below.
-
-The first desktop page contains Drawing, AIChats, Weather, Music, 2048, Photos, Sensor, and Settings. The second contains Button Test, Display Test, and Mic Test.
-
-## 2. Desktop and Navigation
-
-| Action or indicator | Meaning |
+| What you want to try | What to prepare |
 | --- | --- |
-| Tap a desktop icon | Open the app |
-| Swipe left/right on the desktop | Change app pages |
-| App back arrow | Usually at the upper right; Drawing has Back at the upper left |
-| Quick upward swipe from the bottom edge | Return to the desktop in most apps; an app may pause rather than close. Use an audio app's own back button to release its resources |
-| Full-screen Photos | Swipe upward from the middle of the image to return to the file list, then tap the upper-right arrow to exit |
-| Display Test | Double-tap anywhere to exit, with approximately 400 ms or less between taps; system navigation gestures are disabled in this app |
-| Custom button on the desktop | Change the desktop expression |
-| Wi-Fi icon | Connection status, not signal strength |
-| Battery `--%` | No valid battery reading yet, or cached data has expired |
+| Drawing, 2048, screen/button tests, temperature and humidity | Just connect power |
+| Automatic Beijing time and weather | An Internet-connected 2.4 GHz Wi-Fi network |
+| Voice chat | Internet-connected 2.4 GHz Wi-Fi, a compatible speaker, and Xiaozhi device binding on first use |
+| Photos | A FAT32 microSD card with JPG files |
+| Music | A FAT32 microSD card with MP3 files and a compatible speaker |
+| Microphone recording and playback | A compatible speaker; recording does not need an SD card |
 
-The desktop shows `--:--` until the first successful network time synchronization of the current boot. It then displays Beijing time (UTC+8). The system clock continues running after a disconnection; a power cycle requires another network synchronization. **The desktop clock and the RTC factory test in Sensor use separate time sources.**
+### How do you get back to the desktop?
 
-## 3. Connecting to Wi-Fi
+- **Most apps**: tap the upper-right back arrow. Drawing has Back at the upper left.
+- **Full-screen photo**: swipe upward from the middle of the image to return to the file list, then tap the upper-right back arrow.
+- **Display Test**: tap the screen twice in quick succession to exit.
+- A quick upward swipe from the very bottom edge also returns to the desktop in most apps. After music, voice chat, or recording, use the app's own back button before opening another app.
 
-### Recommended: configure using a phone
+## 2. Connect the Board to Wi-Fi
 
-1. Open **Settings → Network setup** on the device and keep this page open throughout setup.
-2. Scan the QR code with your phone to join the device's `RLCD4.2-xxxxxx` hotspot. Its password is `12345678`. The QR code joins the device hotspot; it does not directly open the router credentials form.
-3. If the phone reports that this network has no Internet, choose to stay connected. Do not switch to another Wi-Fi network yet.
-4. If the setup page does not open automatically, enter **http://192.168.4.1** in a browser, using HTTP rather than HTTPS. The phone must still be connected to the device hotspot.
-5. Enter the target 2.4 GHz network in **Network name (SSID)** and **Password**, then tap **Connect and Save**.
-6. Wait for **Connected and saved**. Credentials are stored, and the device hotspot closes about 5 seconds after success. Your phone can reconnect to its usual network.
-7. Return to the desktop and wait for time synchronization, or open Weather or AIChats.
+Once connected, the desktop can automatically show Beijing time, Weather can fetch updates, and AIChats can connect to the voice service.
 
-The device prioritizes the saved network on subsequent boots. Repeat setup to change networks. If the page reports a successful connection but failed saving, the connection may work now but require setup again after a restart.
+### Set up the network using your phone
 
-**Settings → Wi-Fi only scans nearby networks**; tapping a scanned network does not connect to it. A normal connection failure does not automatically start the setup hotspot. Open Network setup manually.
+1. On the board, tap **Settings**, then **Network setup**. Keep this page open until setup is complete.
+2. Scan the on-screen QR code with your phone to join the board's Wi-Fi hotspot. Its name looks like **RLCD4.2-xxxxxx**, and the password is **12345678**. You can also find it manually in your phone's Wi-Fi settings.
+3. If your phone says this network has no Internet, choose **Stay connected** or the equivalent option. This is normal: you are connecting your phone to the board at this step.
+4. A setup web page may open automatically. Otherwise, open a browser and enter **http://192.168.4.1** in its **address bar**.
+5. Enter the details of your router or another phone's hotspot:
 
-### Using the preset test hotspot
+   | Web page field | What to enter or do |
+   | --- | --- |
+   | Network name (SSID) | The Wi-Fi name you want the board to join |
+   | Password | That Wi-Fi network's password |
+   | Connect and Save | Tap this button after filling in both fields |
 
-When no saved credentials exist, the firmware tries this test network:
+6. Wait for **Connected and saved**. Setup is complete. About 5 seconds later, the board turns off its setup hotspot, so your phone disconnecting from it is normal.
+7. Return to the board's desktop and wait for the time to update. On later boots, the board automatically connects to the network you saved.
 
-| Setting | Value |
-| --- | --- |
-| SSID | `weather-wifi` |
-| Password | `12345678` |
-| Band | 2.4 GHz |
+**Use 2.4 GHz Wi-Fi; 5 GHz networks are not supported.** Repeat these steps after changing your router or password.
 
-Enable mobile data when using a phone hotspot, and select 2.4 GHz or a compatibility mode where available. **Saved credentials take priority over this preset.** There is no need to rename your router for normal use.
+If the page will not open, check that the board still shows Network setup, your phone is still connected to the board's hotspot, and you entered `http://192.168.4.1` rather than HTTPS or a search query.
 
-A Wi-Fi connection alone does not guarantee Internet access. Time synchronization, weather, and voice chat also require access to their servers. Drawing, photos, and local hardware tests work offline.
+The **Wi-Fi** page in Settings only lists nearby networks. **Use Network setup to make a connection.**
 
-## 4. Preparing the SD Card
+### Alternative: use the preset hotspot
 
-Use **FAT32**; exFAT is not supported by the current configuration. Power off before inserting or removing the card, and do not remove it while files are being read.
+If you have not saved a Wi-Fi network yet, you can enable a 2.4 GHz phone hotspot named `weather-wifi`, with password `12345678`, and turn on mobile data. The board will try to connect to it.
 
-At each boot, the device performs one background SD card and capacity check. Open **Settings → SD Card** to see the result without first pressing a check button. Wait if Checking is displayed. After inserting or replacing a card, or changing its contents, tap **Check card** to refresh. This is not continuous hot-plug detection; there are no format or eject controls.
+Saved networks take priority over this preset. If a different network is already saved, use Network setup to change it.
 
-Create these folders at the card root. Place files directly inside them, without additional subfolders:
+### Is the clock working?
 
-```text
-SD card root/
-├── photo/
-│   ├── 01_landscape.jpg
-│   └── 02_cat.jpeg
-└── music/
-    ├── 01_song.mp3
-    └── 02_song.mp3
-```
+- `--:--` after startup: network time has not arrived yet. Connect to the Internet and wait.
+- After a successful update: the desktop shows Beijing time (UTC+8).
+- Wi-Fi disconnects afterward: the clock keeps running.
+- Power is disconnected and restored: the board needs another network time update.
 
-Use English letters, numbers, and underscores where possible. Numeric prefixes control filename sorting. Some non-English characters may not display correctly.
+## 3. Add Your Photos and Music
 
-### Photo requirements
+### Prepare the SD card
 
-| Item | Requirement |
-| --- | --- |
-| Folder | `photo` at the SD card root |
-| Format | Baseline JPEG, `.jpg` or `.jpeg`, case-insensitive |
-| Encoding | 8-bit RGB, YCbCr, or grayscale JPEG |
-| Recommended resolution | 400×300 |
-| Maximum file size | 2 MiB |
-| Maximum pixel count | Width × height must not exceed 2,097,152 pixels |
-| Maximum file count | 128 photos |
-| Unsupported | Progressive JPEG, CMYK JPEG, PNG, BMP, GIF, HEIC |
+1. Use a **FAT32** microSD card. Back up existing files before formatting, because formatting deletes them. This firmware does not support exFAT.
+2. Connect the card to a computer using a card reader. Open the card and create two folders directly inside it: **photo** and **music**. This first level is called the card root; do not put these folders inside another folder.
+3. Put photos in photo and music in music. For example:
 
-Other aspect ratios are fitted with white margins, without stretching or cropping. EXIF orientation is not applied automatically; rotate the image on a computer and export it before copying it to the card.
+   ```text
+   SD card/
+   ├── photo/
+   │   ├── 01_cat.jpg
+   │   └── 02_landscape.jpg
+   └── music/
+       ├── 01_song.mp3
+       └── 02_song.mp3
+   ```
 
-The display has only black and white pixels. Color and grayscale photos are converted using dithering, which produces visible dots. Preparing high-contrast 400×300 black-and-white JPG files gives more control over the result.
+4. Safely eject the card from the computer. Turn off the board, insert the card, then power on again.
+5. Open **Settings → SD Card** on the board. The board checks the card automatically at startup. If you see **Checking...**, wait for the capacity to appear. If it is not detected, check insertion and formatting, then tap **Check card**.
 
-Copy the supplied [sample photos](components/Photos/sdcard_example/photo/) into the card's `photo` folder for a quick test.
+### Start with the sample photos
 
-### Music requirements
+Copy the JPG files from the [sample photo folder](components/Photos/sdcard_example/photo/) into the card's photo folder, then open Photos on the board. Confirm that these work before trying your own pictures; this makes troubleshooting easier.
 
-Place actual MP3-encoded `.mp3` files in the `music` folder at the card root. Renaming a file extension does not convert its format. Subfolders, WAV, and FLAC are not supported.
+Prepare your own photos as follows:
 
-## 5. Application Guide
+- Resize them to **400×300 pixels** in an image editor and export as ordinary **JPG/JPEG**. Rotate the picture correctly before exporting; the board does not automatically correct photo orientation.
+- If the export options include **Progressive**, turn it off. Use RGB or grayscale color, rather than CMYK.
+- Keep each file within **2 MiB**, with no more than **128 photos**. Larger original images must also have width × height no greater than **2,097,152 pixels**.
+- Use filenames such as `01_cat.jpg`, with English letters, numbers, and underscores, for easier display and sorting.
+- Convert PNG, GIF, HEIC, and other formats to JPG properly. Renaming the extension to `.jpg` does not convert a file.
 
-| App | Purpose | Additional requirements |
-| --- | --- | --- |
-| Drawing | Monochrome touch drawing | None |
-| AIChats | Xiaozhi voice chat | Internet, service activation, speaker |
-| Weather | Weather information | Internet |
-| Music | MP3 playback | SD card, speaker |
-| 2048 | Number merging game | None |
-| Photos | Full-screen still image viewer | SD card with JPEG files |
-| Sensor | RTC, temperature, humidity | Onboard sensors |
-| Settings | Volume, network, SD card, device information | Depends on the function |
-| Button Test | Button checks | Onboard Custom and BOOT buttons |
-| Display Test | All-black/all-white screen checks | None |
-| Mic Test | Dual microphone levels, recording, playback | Speaker for playback |
+This is a black-and-white screen. Color photos can be opened, but they appear in black and white, with dotted patterns in shaded areas. For clearer outlines, try preparing high-contrast black-and-white photos in advance. Images with other aspect ratios have white margins to avoid distortion.
 
-### Drawing
+### Prepare music files
 
-Touch and drag inside the canvas to draw with a fixed black brush. Tap **Clear** at the upper right to erase the canvas, or **Back** at the upper left to exit. There are no eraser, undo, or SD save controls. Reopening the app clears the canvas.
+Put actual **MP3** files directly in the music folder, with names such as `01_song.mp3` and `02_song.mp3`. Do not use subfolders. Convert WAV, FLAC, or other audio formats to MP3 first.
 
-### AIChats
+## 4. Use Each App
 
-1. Connect to the Internet before opening AIChats.
-2. On an unbound device, follow the on-screen instructions to add the device in the Xiaozhi console using its activation code.
-3. When ready, say “**你好小智**” (Ni hao Xiao Zhi), or tap **Talk** to start a conversation.
-4. Finish speaking and wait for recognition and the reply. **Stop** cancels the current interaction; the wake word can also interrupt a reply.
-5. Scroll the conversation text vertically. Use the upper-right back arrow to exit.
+### Drawing: draw on the screen
 
-The app uses the shared Settings volume; 0 is silent. Exiting stops wake-word listening and releases audio resources. If a network or service error occurs, restore connectivity and follow the page status while it reconnects. A complete firmware flash must include the speech model; flashing only the application BIN does not provide all wake-word resources.
+1. Open **Drawing** and drag your finger across the blank area to draw black lines.
+2. Tap **Clear** at the upper right to erase the whole canvas.
+3. Tap **Back** at the upper left to return to the desktop.
 
-### Weather
+Drawings are temporary and are not saved. Reopening the app gives you a blank canvas.
 
-Opening the app automatically requests weather and shows the city, update time, conditions, temperature, humidity, wind speed, and wind direction. The default city is **Shenzhen**, not a location automatically determined by GPS or Wi-Fi.
+### AIChats: talk to Xiaozhi
 
-Tap the weather illustration to refresh manually. Successful updates repeat about every 5 minutes; failed requests retry after about 30 seconds. Previously fetched data from the current boot may remain visible offline, so check the timestamp and status. Use the upper-right back arrow to exit.
+1. Connect to Wi-Fi as described in Section 2, check that the speaker is connected, and open **AIChats**.
+2. If an activation code appears, follow the on-screen instructions to add the device in the Xiaozhi console and enter the code. After binding, wait for the device to become ready.
+3. Say “**你好小智**” (Ni hao Xiao Zhi), or tap **Talk**, then ask a question such as “What day is it today?”
+4. Finish speaking and wait. Conversation text appears on the screen, and the speaker plays the reply. Tap **Stop** to end the interaction, or use the wake word to interrupt a reply.
+5. Tap the upper-right back arrow to exit. The board stops listening for the wake word after you leave the app.
 
-Developers can change the default city under `menuconfig → RLCD Weather` and rebuild.
+If you cannot hear a reply, raise the Settings volume, make sure it is not 0, and check the speaker. For network errors, check that your Wi-Fi has Internet access.
 
-### Music
+### Weather: check the weather
 
-1. Prepare the SD card as described in Section 4 and open Music. The app scans files and starts paused.
-2. Use Play/Pause to control playback. Resuming after a pause continues from the current position.
-3. Previous/Next cycle through tracks while retaining the playing or paused state.
-4. Playback stops at the end of a track; it does not automatically advance. Press Play again to restart that track.
-5. Exit using the upper-right back arrow or an upward swipe from the middle of the page. Closing the app stops playback.
+1. Connect to the Internet, open **Weather**, and wait for weather, temperature, humidity, and wind information.
+2. Tap the **weather illustration** to update immediately. The page also normally updates about every 5 minutes.
+3. Tap the upper-right back arrow to exit.
 
-The progress bar is read-only and does not support seeking. **Music Player / Chill Vibes** are fixed cover text, not the current filename or track metadata. After a read error, check the card and files, press the center button to rescan, then press Play.
+The default city is **Shenzhen**; it does not automatically follow your location. Old readings may stay on the page after disconnection, so check the update time. To change the city, see the developer notes at the end.
 
-### 2048
+### Music: play a song
 
-Swipe up, down, left, or right inside the board to merge matching numbers and increase your score. **New Game** restarts the game; the result page also allows restarting after winning or running out of moves. The best score lasts for the current powered session; neither it nor game progress is guaranteed to survive a restart. Use the upper-right back arrow to exit.
+1. Add MP3 files as described in Section 3, connect the speaker, and open **Music**.
+2. Tap the center **Play button** to start. Tap again to pause, and again to resume.
+3. Use Previous/Next to change songs. Files are sorted by name.
+4. Tap the upper-right back arrow to exit and stop playback. An upward swipe from the middle of the page also exits.
 
-Start swipes inside the board to avoid triggering navigation gestures at the screen edges.
+Playback stops when a song ends; select the next song manually. The progress bar shows your position but cannot be dragged. Music Player / Chill Vibes are decorative text, not the current song title.
 
-### Photos
+### 2048: merge matching numbers
 
-1. Open Photos and wait for the `photo` folder scan and file list.
-2. Tap a filename to show the image full-screen, without the app header or status bar.
-3. Swipe left from the middle of the image for the next photo, or right for the previous one. Navigation wraps at the ends.
+1. Open **2048** and swipe up, down, left, or right inside the board to move the tiles.
+2. Matching numbers merge: two 2 tiles become a 4. Keep going and try to reach 2048.
+3. Tap **New Game** to restart. You can also restart from the result page.
+4. Tap the upper-right back arrow to exit.
+
+Game progress is not saved automatically. The best score lasts for the current powered session. Swipe inside the board rather than from screen edges to avoid triggering navigation.
+
+### Photos: view pictures full-screen
+
+1. Add JPG files as described in Section 3, open **Photos**, and wait for the file list.
+2. Tap a filename to show the picture full-screen. There is no top bar or back button in this view.
+3. **Swipe left from the middle of the image for the next photo, or right for the previous one.** Navigation wraps at the ends.
 4. **Swipe upward from the middle of the image to return to the list**, then tap the upper-right back arrow to exit.
-5. Use **Rescan** after changing files to refresh the list and image cache.
+5. After changing photos on the card, tap **Rescan** on the list page before opening them again.
 
-This is a manually controlled still image viewer. There is no timed slideshow, GIF animation, or web upload. The app does not create, delete, or modify photos on the SD card. The startup SD check does not decode all photos; images are read and decoded when selected.
+Change photos by swiping; there is no automatic slideshow. The app only reads the pictures and does not delete or modify the originals.
 
-### Sensor
+### Sensor: check temperature, humidity, and test time
 
-Displays the PCF85063 RTC and SHTC3 temperature/humidity readings. The RTC refreshes about once per second and temperature/humidity about every 5 seconds. Invalid readings use placeholders.
+1. Open **Sensor** to see temperature, humidity, and a clock.
+2. Temperature and humidity update about every 5 seconds, and the clock changes every second. If placeholders appear at first, wait a moment.
+3. Tap the upper-right back arrow to exit.
 
-**This is a separate RTC factory test.** RTC initialization writes the test starting time **2026-04-22 23:59:00**; reopening or resuming the page may initialize it again. This is not Beijing time and is not synchronized with the desktop network clock. Use the upper-right back arrow to exit.
+**This clock tests the board's RTC chip; it is not the desktop's Beijing time.** The test starts at **2026-04-22 23:59:00** and may restart when the app is reopened or resumed. For actual Beijing time, use the desktop after connecting to the Internet.
 
-### Settings
+### Settings: volume, Wi-Fi, and SD card checks
 
-- **Volume**: shared volume from 0–100 in steps of 5, default 55. Changes apply immediately and save when the slider is released, surviving a restart. 0 mutes playback. Adjust again if saving fails.
-- **Wi-Fi**: scan nearby 2.4 GHz networks and inspect names, signal, channels, and security. This page does not connect by selecting a network.
-- **Network setup**: QR-assisted web provisioning, described in Section 3.
-- **SD Card**: startup mount status, total capacity, and free space. Check card refreshes the result. MiB/GiB use binary units.
-- **About**: firmware version, ESP-IDF, MAC, Flash, PSRAM, and display information.
+Open **Settings**, then choose what you need:
 
-The back arrow returns from a subpage to the Settings home page; tap again to exit. Raising the volume does not automatically resume paused music.
-
-### Button Test
-
-Press and release **Custom (GPIO18)** and **BOOT (GPIO0)**. The page shows PRESSED/RELEASED states and counts; a completed test shows PASS for that button, and 2/2 when both pass. The refresh icon clears results. Use the upper-right back arrow to exit.
-
-Test BOOT after normal startup. Holding it during power-on or reset can enter download mode.
-
-### Display Test
-
-The app starts with black and repeatedly displays **all black for 10 seconds → all white for 5 seconds** to inspect uniformity and pixel defects. There are no text or header elements; the black interval is intentional.
-
-**Double-tap anywhere to exit**, with approximately 400 ms or less between taps. System navigation gestures are disabled on this page.
-
-### Mic Test
-
-1. Observe the live MIC1 and MIC2 levels while speaking near each microphone.
-2. Tap **Record** to record both channels for up to about 5 seconds. **Stop** ends recording early.
-3. Use the **MIC1 / MIC2** playback buttons to listen to each recorded channel. Stop ends playback.
-4. A new recording replaces the previous one. The upper-right back arrow exits and releases the recording resources.
-
-Recordings stay in memory and are not saved to the SD card. dBFS measures digital audio level, not acoustic sound pressure in dB SPL. CLIPPED indicates a signal near full scale; move farther away or speak more quietly and record again. Both microphones picking up sound is normal.
-
-Music, AIChats, and Mic Test share audio hardware. Exit through an app's own back button before switching. If playback is silent, check the speaker connection and Settings volume.
-
-## 6. Understanding the Battery Reading
-
-The desktop percentage is an **estimate of remaining charge based on sampled voltage**. It is not a precise capacity measurement from a dedicated fuel gauge and does not predict exact remaining runtime.
-
-The firmware forms a sample window about every 2 seconds, then applies outlier removal, filtering, hysteresis, and display rate limiting. The voltage mapping spans approximately 3.00–4.12 V. The percentage normally changes gradually, with faster decreases allowed at low voltage. A percentage calculated directly from an instantaneous voltage can therefore differ from the displayed value.
-
-Charging, load, and battery condition affect the reading. The firmware does not reliably detect battery presence or charging state and has no on-screen charging animation. Refer to the board's charging indicator for charging status.
-
-## 7. Troubleshooting
-
-| Symptom | What to do |
+| On-screen name | What to do |
 | --- | --- |
-| Screen is hard to read in darkness | Increase ambient lighting; this reflective LCD has no backlight |
-| Desktop time is `--:--` | Configure Wi-Fi and wait for the first Internet time synchronization of this boot |
-| Wi-Fi connects but weather/time does not update | Check Internet access and access to the relevant servers |
-| Phone cannot open 192.168.4.1 | Keep Network setup open, join the device hotspot, use HTTP, and prevent automatic network switching |
-| A scanned Wi-Fi network cannot be selected | The scan page is informational; use Network setup |
-| Preset hotspot does not connect after a change | Saved credentials take priority; update them through Network setup |
-| SD card is not detected | Check insertion and FAT32 formatting, then tap Settings → SD Card → Check card |
-| Photo list is empty | Check the root `photo` folder, extensions, and JPEG encoding, then tap Rescan |
-| Photo fails to open or is rotated | Re-export baseline JPEG within the limits in Section 4; rotate it on a computer first |
-| Photos show dotted patterns | This is monochrome dithering; try preprocessed high-contrast black-and-white images |
-| Full-screen photo has no back button | Swipe upward from the middle of the image to return to the list |
-| Display Test looks stuck on black | Wait 10 seconds for white, or double-tap to exit; check ambient light |
-| Music or recording playback is silent | Check speaker wiring and shared volume; close other audio apps |
-| Music does not advance at track end | Playback intentionally stops; select the next track manually |
-| Sensor time differs from the desktop | Sensor uses the independent RTC factory test; the desktop uses network time |
-| Battery changes slowly or differs from a voltage calculation | Filtering and rate limiting apply to a voltage-based estimate |
-| Voice chat asks for activation | Complete Xiaozhi device binding using the on-screen instructions and an Internet connection |
+| Volume | Drag right for louder sound. 0 is mute. The setting saves when you release the slider and is restored at the next boot |
+| Wi-Fi | View nearby Wi-Fi names and signal information |
+| Network setup | Connect the board to your Wi-Fi; follow Section 2 |
+| SD Card | Check detection, total capacity, and free space. Tap Check card to check again |
+| About | View firmware version and device information |
 
-## 8. Reflashing and Developer Notes
+The back arrow first returns from a subpage to the Settings home page; tap again for the desktop. After raising the volume, return to music or recording playback and tap Play to start the sound.
 
-Preinstalled firmware does not require compilation. If you have obtained a **complete merged BIN** for this product, flash it at **0x0** using ESP32-S3, 16 MB Flash, DIO mode, and 80 MHz. Erasing or writing a full image may clear saved Wi-Fi, volume, and device activation information. It does not delete SD card files.
+### Button Test: check the physical buttons
 
-The source project uses **ESP-IDF v6.0.2 and LVGL v9.5.0**. From an ESP-IDF terminal in this directory, run:
+1. Open **Button Test**, then press and release **Custom** on the board. Watch the state and count change.
+2. Press and release **BOOT**. Each completed check shows **PASS**; both completed checks show **2/2**.
+3. Tap the refresh icon to clear the results and test again. The upper-right back arrow exits.
+
+Wait for normal startup before testing BOOT. Holding BOOT while powering on may enter download mode instead of showing the desktop.
+
+### Display Test: check black and white pixels
+
+1. Open **Display Test**. The screen stays **all black for 10 seconds**, then **all white for 5 seconds**, repeating continuously.
+2. In good lighting, look for pixels that stay unchanged or areas that appear uneven.
+3. To exit, **tap the screen twice in quick succession**. If it does not exit, try two taps closer together.
+
+This page intentionally has no text or back button. When it first appears black, wait the full 10 seconds before assuming something is wrong.
+
+### Mic Test: record and listen back
+
+1. Connect the speaker and open **Mic Test**. Speak toward the board; the MIC1 and MIC2 level bars should respond.
+2. Tap **Record** and say “This is a microphone test.” Wait about 5 seconds for recording to finish, or tap **Stop** to finish early.
+3. Tap the **MIC1** and **MIC2** playback buttons separately to hear what each microphone recorded.
+4. Tap Record again to replace the previous recording. The upper-right back arrow exits.
+
+The recording is for immediate listening and is not saved to the SD card. If it is silent, check the speaker and Settings volume. If **CLIPPED** appears, move farther away or speak more quietly and record again; the sound was too loud and may be distorted.
+
+## 5. Read the Battery Percentage
+
+The desktop percentage **estimates remaining charge from battery voltage**. Use it as a rough indication, rather than an exact capacity or remaining runtime. If it shows `--%` just after startup, wait a few seconds.
+
+To keep the reading stable, the percentage does not follow every voltage fluctuation immediately. Charging or playing sound can also affect it. Check the board's charging indicator to see whether it is charging; there is no on-screen charging animation.
+
+## 6. If Something Does Not Work
+
+| What you see | Try this first |
+| --- | --- |
+| Screen is hard to read in darkness | Move to better lighting; this screen has no backlight |
+| Desktop keeps showing `--:--` | Follow Section 2, check Internet access, and wait for a time update |
+| Phone says the board hotspot has no Internet | Stay connected and open http://192.168.4.1 in a browser |
+| Setup page will not open | Keep Network setup open and check that the phone has not switched to another Wi-Fi network |
+| Tapping a Wi-Fi name does nothing | This is the scan page; go back and open Network setup |
+| Web page says connected but saving failed | Repeat setup; successful saving is needed for automatic connection after restarting |
+| Photo or music list is empty | Check Settings → SD Card, then check that photo/music are directly at the card root |
+| SD Card shows no capacity | Check insertion and FAT32 format, then tap Check card |
+| Your photo will not open | Try the sample images in Section 3, then re-export your photo as an ordinary 400×300 JPG |
+| Photo is rotated incorrectly | Rotate and re-export it on a computer, copy it again, and tap Rescan |
+| Photo contains many tiny dots | Black-and-white conversion produces this pattern; try a high-contrast black-and-white image |
+| You cannot leave a full-screen photo | Swipe upward from the middle, then tap the back arrow in the list |
+| Screen test is black with no text | Wait 10 seconds for white, or double-tap quickly to exit |
+| Music or recorded playback is silent | Check the speaker, raise Settings volume, and exit other audio apps using their back buttons |
+| Weather is out of date | Check the network, tap the weather illustration, and check the update time |
+| Sensor and desktop clocks differ | Sensor shows the RTC test clock; the desktop shows network-synchronized Beijing time |
+
+## 7. Modify or Reflash the Firmware
+
+For normal use, follow the sections above. For development, this directory contains the factory source project, using **ESP-IDF v6.0.2 and LVGL v9.5.0**.
+
+Open an ESP-IDF terminal in this directory and run:
 
 ```sh
 idf.py set-target esp32s3
@@ -258,6 +253,10 @@ idf.py build
 idf.py flash monitor
 ```
 
-Press `Ctrl+]` to exit the serial monitor. Use the generated project flash parameters to include speech model and other partitions; `build/flash_args` is authoritative. `build/esp32_s3_touch_rlcd_4_2b.bin` is an **application partition image**, not a complete merged firmware, and must not be flashed at 0x0.
+Press `Ctrl+]` to exit the serial monitor. To change the weather city, run `idf.py menuconfig`, edit the city settings under **RLCD Weather**, then rebuild and flash.
 
-The shared BSP is [esp32_s3_touch_rlcd_4_2b](components/esp32_s3_touch_rlcd_4_2b/). See the [Photos notes](components/Photos/README.md), [Weather notes](components/Weather/README.md), [Settings notes](components/Settings/README.md), [Music notes](components/Music/README.md), and [Mic Test notes](components/MicTest/README.md) for implementation details.
+If you have a **complete merged BIN** for this product, use address **0x0**, ESP32-S3, 16 MB Flash, DIO, and 80 MHz. The generated `build/esp32_s3_touch_rlcd_4_2b.bin` is only the application image; do not flash it at 0x0 as a complete firmware. When flashing from source for the first time, use `idf.py flash` so that the speech model and other required contents are included according to `build/flash_args`.
+
+Erasing or writing a full image may clear saved Wi-Fi, volume, and activation information. Set these up again using the steps above. Files on the SD card are unaffected.
+
+Hardware interfaces are shared through the [esp32_s3_touch_rlcd_4_2b BSP](components/esp32_s3_touch_rlcd_4_2b/). For implementation details, see the [Photos](components/Photos/README.md), [Weather](components/Weather/README.md), [Settings](components/Settings/README.md), [Music](components/Music/README.md), and [Mic Test](components/MicTest/README.md) component notes.
