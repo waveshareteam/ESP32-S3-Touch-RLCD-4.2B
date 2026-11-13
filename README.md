@@ -9,7 +9,7 @@
   </p>
   <p>
     <a href="https://www.waveshare.com/">🌐 Product</a> &middot;
-    <a href="https://github.com/waveshareteam/ESP32-S3-Touch-RLCD-4.2B/releases/latest">📦 Firmware</a> &middot;
+    <a href="firmware/">📦 Firmware</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
     <a href="docs/images/">📚 Documentation</a>
@@ -35,12 +35,12 @@ This repository provides matching ESP-IDF and Arduino examples 01–06, plus the
 
 ## 📦 Quick Start
 
-1. Choose an ESP-IDF or Arduino example below.
-2. Install a version listed under Development Environment.
-3. Follow the example instructions to build, connect the board and flash.
-4. View the display under ambient light and operate the touch interface.
+1. Download the complete factory firmware with `FactoryOnly` in its filename from [firmware](firmware/).
+2. Connect the board with a USB data cable, then follow the [flashing instructions](firmware/README.md) to erase and flash at `0x0`.
+3. Power on again, view the desktop under ambient light, and tap an app icon.
+4. Follow the [factory firmware user guide](examples/factory/README.md) to set up Wi-Fi, prepare an SD card, and try each app.
 
-Factory application source is in [examples/factory](examples/factory/). No prebuilt factory BIN is included.
+Factory application source is in [examples/factory](examples/factory/). To modify the examples, choose one below and follow its README to build and flash.
 
 ## 🧪 Examples
 
@@ -80,6 +80,8 @@ Versions and board options are recorded in [.github/product.json](.github/produc
 
 ## 📚 Resources
 
+- [Schematic](hardware/schematic/)
+- [Dimensions and 3D model](hardware/mechanical/)
 - [Official product website](https://www.waveshare.com/)
 - [ESP-IDF examples](examples/esp-idf/)
 - [Arduino examples](examples/arduino/examples/)

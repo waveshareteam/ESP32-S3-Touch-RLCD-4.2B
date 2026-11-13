@@ -9,7 +9,7 @@
   </p>
   <p>
     <a href="https://www.waveshare.com/">🌐 产品</a> &middot;
-    <a href="https://github.com/waveshareteam/ESP32-S3-Touch-RLCD-4.2B/releases/latest">📦 固件</a> &middot;
+    <a href="firmware/">📦 固件</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
     <a href="docs/images/">📚 资料</a>
@@ -35,12 +35,12 @@
 
 ## 📦 快速开始
 
-1. 选择下方的 ESP-IDF 或 Arduino 示例。
-2. 安装「开发环境」列出的版本。
-3. 按示例说明编译、连接开发板并烧录。
-4. 在环境光下观察屏幕并操作触摸。
+1. 在 [firmware](firmware/) 目录下载文件名带 `FactoryOnly` 的完整出厂固件。
+2. 使用 USB 数据线连接开发板，按[烧录说明](firmware/README_ZH.md)擦除并从 `0x0` 烧录。
+3. 重新上电，在环境光下查看桌面，轻点图标打开应用。
+4. 按照[出厂固件使用说明](examples/factory/README_ZH.md)完成配网、准备 SD 卡并体验各应用。
 
-出厂应用源码位于 [examples/factory](examples/factory/README_ZH.md)。当前仓库未附带预编译出厂 BIN。
+出厂应用源码位于 [examples/factory](examples/factory/)。自行修改时，选择下方示例并按对应 README 编译烧录。
 
 ## 🧪 示例
 
@@ -80,6 +80,8 @@ Arduino 公共库位于 [examples/arduino/libraries](examples/arduino/libraries/
 
 ## 📚 资料
 
+- [原理图](hardware/schematic/)
+- [尺寸图与 3D 模型](hardware/mechanical/)
 - [官方产品网站](https://www.waveshare.com/)
 - [ESP-IDF 示例](examples/esp-idf/)
 - [Arduino 示例](examples/arduino/examples/)
