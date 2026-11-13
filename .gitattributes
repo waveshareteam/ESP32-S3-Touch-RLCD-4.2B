@@ -1,0 +1,5 @@
+*.bin binary
+*.pdf binary
+*.dxf binary
+*.stp binary
+*.step binary

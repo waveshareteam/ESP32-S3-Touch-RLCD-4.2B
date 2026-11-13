@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/waveshareteam/esp32-repo-template/v1/schema/product.schema.json",
+  "product": "ESP32-S3-Touch-RLCD-4.2B",
+  "product_url": "https://www.waveshare.com/",
+  "tier": 0,
+  "target": "esp32s3",
+  "esp_idf": {
+    "versions": [
+      "v6.0.2"
+    ]
+  },
+  "arduino": {
+    "core": "3.3.12",
+    "fqbn": "esp32:esp32:esp32s3:FlashSize=16M,PartitionScheme=app3M_fat9M_16MB,PSRAM=opi,USBMode=hwcdc,CDCOnBoot=cdc"
+  },
+  "factory_firmware": {
+    "esp_idf": "v6.0.2"
+  },
+  "overrides": {
+    "markdown_audit": {
+      "classification_rules": [
+        {
+          "category": "embedded_upstream",
+          "patterns": [
+            "examples/factory/components/XiaozhiApp/third_party/**"
+          ]
+        },
+        {
+          "category": "embedded_upstream",
+          "patterns": [
+            "examples/factory/components/brookesia_core/**"
+          ]
+        },
+        {
+          "category": "first_party_customer",
+          "patterns": [
+            "examples/factory/components/Music/**",
+            "examples/factory/components/XiaozhiApp/**",
+            "examples/factory/components/MicTest/**",
+            "examples/factory/components/Photos/**",
+            "examples/factory/components/Sensor/**",
+            "examples/factory/components/Settings/**",
+            "examples/factory/components/Weather/**",
+            "examples/factory/components/rlcd_desktop/**",
+            "examples/factory/components/rlcd_ui/**",
+            "examples/factory/components/esp_rlcd_st7305/**"
+          ]
+        },
+        {
+          "category": "first_party_wrapper",
+          "patterns": [
+            "examples/arduino/libraries/board_config/**"
+          ]
+        },
+        {
+          "category": "first_party_wrapper",
+          "patterns": [
+            "examples/esp-idf/*/components/esp_rlcd_st7305/**"
+          ]
+        }
+      ]
+    }
+  }
+}

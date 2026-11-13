@@ -1,0 +1,20 @@
+dependencies:
+  esp_lcd_touch_cst816s: "*"
+  espressif/esp_lvgl_port:
+    public: true
+    version: ^2
+  espressif/esp_codec_dev:
+    public: true
+    version: ^1
+  idf: '>=5.3'
+  waveshare/pcf85063a:
+    version: "1.1.1"
+    override_path: "../waveshare__pcf85063a"
+
+description: Board Support Package (BSP) for Waveshare ESP32-S3-Touch-RLCD-4.2B
+tags:
+- bsp
+targets:
+- esp32s3
+url: https://www.waveshare.com/esp32-s3-touch-rlcd-4.2.htm
+version: 1.0.0
