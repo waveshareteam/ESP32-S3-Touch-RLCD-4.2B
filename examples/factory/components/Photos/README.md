@@ -4,7 +4,7 @@
 
 ## What It Does
 
-Decodes JPEG files from the SD card, scales them and converts them to a monochrome dithered image below the shared application header.
+Decodes JPEG files from the SD card and displays them as monochrome dithered images in a 400x300 full-screen viewer. Other aspect ratios are fitted with white margins.
 
 ## Hardware Required
 
@@ -16,7 +16,7 @@ Build and flash the [factory application](../../README.md), then open the corres
 
 ## Expected Result
 
-Use a FAT32 microSD card and follow the image-directory requirements in the Chinese usage guide. The BSP manages SDMMC access.
+Open a photo from the list, swipe left or right to change photos, and swipe up to return to the list. The viewer has no header; the list's back arrow closes the app.
 
 ## Troubleshooting
 

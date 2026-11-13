@@ -17,8 +17,9 @@ can be updated for child pages. The caller supplies its existing back callback;
 the component does not own app state or navigation. All widgets are children
 of the supplied parent and are released with it.
 
-The photos viewer fits images into 400x252 below its header; the back arrow returns to
-the list, then closes the app. The 2048 board is 236x236 below its header, and
+The photos list uses the shared header; its back arrow closes the app. The photo
+viewer uses all 400x300 pixels without a header; swipe up to return to the list.
+The 2048 board is 236x236 below its header, and
 the game result page uses the same header.
 
 Icons are opaque I1 assets generated offline from the existing app glyphs.

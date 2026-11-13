@@ -324,7 +324,7 @@ bool init_photo_ui_screen(lv_obj_t *parent, int32_t x, int32_t y, photo_back_cb_
     if (!parent || !photo_service_start()) return false;
     deinit_photo_ui();
     ui.on_back = back; ui.context = context;
-    ui.root = box(parent, x, y, PHOTO_WIDTH, 300);
+    ui.root = box(parent, x, y, PHOTO_WIDTH, PHOTO_HEIGHT);
     lv_obj_set_user_data(ui.root, &ui);
     lv_obj_add_event_cb(ui.root, deleted, LV_EVENT_DELETE, NULL);
     rlcd_app_header_t header = rlcd_app_header_create(ui.root, "Photos", &rlcd_header_photos, back_event, NULL);
@@ -340,18 +340,18 @@ bool init_photo_ui_screen(lv_obj_t *parent, int32_t x, int32_t y, photo_back_cb_
     lv_obj_set_flex_flow(ui.list, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_bg_color(ui.list, lv_color_black(), LV_PART_SCROLLBAR);
     lv_obj_set_style_bg_opa(ui.list, LV_OPA_COVER, LV_PART_SCROLLBAR);
-    ui.viewer = box(ui.root, 0, 0, PHOTO_WIDTH, 300);
+    ui.viewer = box(ui.root, 0, 0, PHOTO_WIDTH, PHOTO_HEIGHT);
     lv_obj_remove_flag(ui.viewer, LV_OBJ_FLAG_GESTURE_BUBBLE);
     lv_obj_add_event_cb(ui.viewer, viewer_event, LV_EVENT_GESTURE, NULL);
     lv_obj_add_flag(ui.viewer, LV_OBJ_FLAG_HIDDEN);
     ui.image = lv_image_create(ui.viewer);
-    lv_obj_set_pos(ui.image, 0, RLCD_APP_HEADER_HEIGHT);
+    lv_obj_set_pos(ui.image, 0, 0);
     lv_obj_remove_flag(ui.image, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(ui.image, LV_OBJ_FLAG_HIDDEN);
-    ui.message = label(ui.viewer, "", 28, 160, 344, &lv_font_montserrat_16);
+    ui.message = label(ui.viewer, "", 0, 0, 344, &lv_font_montserrat_16);
     lv_label_set_long_mode(ui.message, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(ui.message, LV_TEXT_ALIGN_CENTER, 0);
-    rlcd_app_header_create(ui.viewer, "Photos", &rlcd_header_photos, back_event, NULL);
+    lv_obj_center(ui.message);
     poll_timer = lv_timer_create(poll, 20, NULL);
     if (!poll_timer) { deinit_photo_ui(); return false; }
     scan();
