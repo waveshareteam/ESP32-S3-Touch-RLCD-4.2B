@@ -203,8 +203,6 @@ Wait for normal startup before testing BOOT. Holding BOOT while powering on may 
 2. In good lighting, look for pixels that stay unchanged or areas that appear uneven.
 3. To exit, **tap the screen twice in quick succession**. If it does not exit, try two taps closer together.
 
-This page intentionally has no text or back button. When it first appears black, wait the full 10 seconds before assuming something is wrong.
-
 ### Mic Test: record and listen back
 
 1. Connect the speaker and open **Mic Test**. Speak toward the board; the MIC1 and MIC2 level bars should respond.
