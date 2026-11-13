@@ -12,7 +12,7 @@ ESP32-S3-Touch-RLCD-4.2B development board. The development board and a USB data
 
 ## How to Run
 
-Use an ESP-IDF version listed in the [product README](../../../README.md), then run from this example directory:
+Use **ESP-IDF v6.0.2** (see the [product README](../../../README.md)), then run from this example directory:
 
 ```sh
 idf.py set-target esp32s3

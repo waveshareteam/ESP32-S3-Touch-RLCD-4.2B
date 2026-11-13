@@ -72,7 +72,7 @@ Arduino 公共库位于 [examples/arduino/libraries](examples/arduino/libraries/
 
 | 框架 | 版本 | 示例数 |
 | --- | --- | ---: |
-| ESP-IDF | v5.5.4 / v6.0.2 | 6 |
+| ESP-IDF | v6.0.2 | 6 |
 | Arduino-ESP32 | 3.3.12 | 6 |
 | LVGL | 9.5.0 | 两个框架共用版本 |
 

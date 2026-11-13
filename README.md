@@ -72,7 +72,7 @@ Arduino dependencies are bundled in [examples/arduino/libraries](examples/arduin
 
 | Framework | Version | Examples |
 | --- | --- | ---: |
-| ESP-IDF | v5.5.4 / v6.0.2 | 6 |
+| ESP-IDF | v6.0.2 | 6 |
 | Arduino-ESP32 | 3.3.12 | 6 |
 | LVGL | 9.5.0 | Both frameworks |
 

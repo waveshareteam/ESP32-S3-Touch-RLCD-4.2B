@@ -6,7 +6,6 @@
   "target": "esp32s3",
   "esp_idf": {
     "versions": [
-      "v5.5.4",
       "v6.0.2"
     ]
   },

@@ -82,7 +82,7 @@ idf.py -p COMx flash monitor
 
 普通堆分配策略对齐 2.06：`CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=0`、`CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL=4096`。PSRAM 与内部 RAM 都是所有 APP 共用的有限资源；分配器隔离各个分配块，共享音频硬件仍由 BSP 会话接口管理。
 
-AFE 处理任务的 8 KiB 栈与采集任务的 6 KiB 栈通过 `xTaskCreateWithCaps` / `xTaskCreatePinnedToCoreWithCaps` 显式分配到 PSRAM，任务优先级、核绑定和栈大小保留。这样可减少 14 KiB 的片内栈需求；任务控制块、同步对象和 DMA 缓冲仍使用内部 RAM。`sdkconfig.defaults` 使用 ESP-IDF 5.5 的 `CONFIG_FREERTOS_TASK_CREATE_ALLOW_EXT_MEM=y`，该选项允许外部栈，但不会自动改变普通 `xTaskCreate` 的分配位置。
+AFE 处理任务的 8 KiB 栈与采集任务的 6 KiB 栈通过 `xTaskCreateWithCaps` / `xTaskCreatePinnedToCoreWithCaps` 显式分配到 PSRAM，任务优先级、核绑定和栈大小保留。这样可减少 14 KiB 的片内栈需求；任务控制块、同步对象和 DMA 缓冲仍使用内部 RAM。`sdkconfig.defaults` 使用 ESP-IDF 6.0.2 的 `CONFIG_FREERTOS_TASK_CREATE_ALLOW_EXT_MEM=y`，该选项允许外部栈，但不会自动改变普通 `xTaskCreate` 的分配位置。
 
 这两个任务退出后通知所属控制任务，由控制任务调用 `vTaskDeleteWithCaps` 回收任务栈及控制块，再释放 AFE、重采样器及音频会话。任务自身不另建清理任务，降低内存紧张时退出失败的风险。采集缓冲申请失败、后续音频任务创建失败、正常退出和再次进入均沿用相同回收路径。
 

@@ -12,7 +12,7 @@ ESP32-S3-Touch-RLCD-4.2B 开发板。开发板和 USB 数据线。
 
 ## 怎么运行
 
-使用[产品说明](../../../README_ZH.md)列出的 ESP-IDF 版本，在当前示例目录运行：
+使用 **ESP-IDF v6.0.2**（[环境说明](../../../README_ZH.md)），在当前示例目录运行：
 
 ```sh
 idf.py set-target esp32s3
