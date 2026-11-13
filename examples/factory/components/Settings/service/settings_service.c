@@ -72,7 +72,10 @@ static void worker(void *unused)
 bool settings_service_start(void)
 {
     if (worker_task) return true;
-    return xTaskCreate(worker, "rlcd_settings", 4096, NULL, 2, &worker_task) == pdPASS;
+    if (xTaskCreate(worker, "rlcd_settings", 4096, NULL, 2, &worker_task) != pdPASS) return false;
+    /* Queue the initial check once; SD I/O stays on the background worker. */
+    settings_service_check_sd();
+    return true;
 }
 
 void settings_service_get_snapshot(settings_snapshot_t *out, uint16_t scan_first)

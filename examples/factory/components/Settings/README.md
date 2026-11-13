@@ -16,7 +16,7 @@ Build and flash the [factory application](../../README.md), then open the corres
 
 ## Expected Result
 
-Use the desktop Settings icon. Volume changes apply immediately and are saved by the background worker when the control is released.
+Use the desktop Settings icon. Volume changes apply immediately and are saved by the background worker when the control is released. SD storage is checked once in the background at each boot; the SD Card page shows the cached status, total space and free space without a manual check. Use Check card to refresh after inserting or replacing a card.
 
 ## Troubleshooting
 

@@ -17,6 +17,7 @@
 #include "Photos.hpp"
 #include "Sensor.hpp"
 #include "Settings.hpp"
+#include "settings_service.h"
 #include "Music.hpp"
 #include "ButtonTest.hpp"
 #include "DisplayTest.hpp"
@@ -65,6 +66,11 @@ extern "C" void app_main(void)
     if (display == nullptr) {
         ESP_LOGE(TAG, "Start display/LVGL/touch failed");
         return;
+    }
+
+    // Detect SD storage in the background so Settings can show the boot result.
+    if (!settings_service_start()) {
+        ESP_LOGW(TAG, "Start settings service failed; retry when Settings opens");
     }
 
     // 3. Connect the Brookesia GUI lock to the BSP; this BSP returns bool and uses a zero timeout to wait indefinitely.

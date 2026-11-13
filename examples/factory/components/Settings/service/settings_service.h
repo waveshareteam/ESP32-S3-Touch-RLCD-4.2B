@@ -21,6 +21,7 @@ typedef struct {
     wifi_scan_snapshot_t scan;
 } settings_snapshot_t;
 
+/* Start once at boot and queue an SD check. Repeated calls reuse the worker. */
 bool settings_service_start(void);
 void settings_service_get_snapshot(settings_snapshot_t *out, uint16_t scan_first);
 /* Set the live volume without hardware/flash I/O on the UI task.
