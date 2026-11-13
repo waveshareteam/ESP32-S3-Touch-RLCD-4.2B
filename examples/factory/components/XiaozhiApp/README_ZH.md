@@ -58,7 +58,7 @@ AFE 是音频前端，AEC 是其中的回声消除模块。原理图中的 `OUTP
 
 ## 编译与首次烧录
 
-在工程根目录的 ESP-IDF 5.5.4 环境运行：
+在工程根目录的 ESP-IDF 6.0.2 环境运行：
 
 ```powershell
 idf.py build

@@ -3,7 +3,7 @@
 [English](README.md) | [简体中文](README_ZH.md)
 
 参照 C5-2.8 的 Settings 生命周期和网络功能移植，使用 LVGL 原生黑白控件。
-在 `main/main.cpp` 注册为第一个 APP；桌面图标和页面图标为原生 I1 数组。
+在 `main/main.cpp` 注册到桌面；桌面图标和页面图标为原生 I1 数组。
 
 ## 页面
 
