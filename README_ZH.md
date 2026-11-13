@@ -12,9 +12,8 @@
     <a href="firmware/">📦 固件</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
-    <a href="docs/images/">📚 资料</a>
+    <a href="examples/factory/README_ZH.md">📚 资料</a>
   </p>
-  <p><img src="docs/images/gallery-preview.png" alt="ESP32-S3-Touch-RLCD-4.2B monochrome gallery UI preview" width="500"></p>
 </div>
 
 ---
