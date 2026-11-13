@@ -1,5 +1,5 @@
-# BSP baseline for Waveshare ESP32-S3-Touch-RLCD-4.2
-# Generated from components/esp32_s3_touch_rlcd_4_2.
+# BSP baseline for Waveshare ESP32-S3-Touch-RLCD-4.2B
+# Generated from components/esp32_s3_touch_rlcd_4_2b.
 
 # Target, flash and partition table
 CONFIG_IDF_TARGET="esp32s3"

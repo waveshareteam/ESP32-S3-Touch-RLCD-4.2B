@@ -43,7 +43,7 @@
 - `../network_service/wifi_manager.c`：唯一 Wi-Fi 工作任务，串行管理扫描、连接、热点、配网和 NVS。
   扫描不阻塞 GUI；已有连接尽量保留，尚未连接时暂缓自动连接以完成扫描。
   配网使用会话编号，避免快速退出/重进时使用旧结果或旧关闭定时。
-- BSP `esp32_s3_touch_rlcd_4_2.c/.h`：统一维护 `bsp_sdcard_mount()`、
+- BSP `esp32_s3_touch_rlcd_4_2b.c/.h`：统一维护 `bsp_sdcard_mount()`、
   `bsp_sdcard_unmount()`、`bsp_sdcard_get_info()`，加锁避免重复挂载。
   Photos 在错误恢复时也通过 BSP 管理共享卡句柄。
   `bsp_user_button_init()` 在 main 启动时调用，`bsp_user_button_get_press_count()` 提供消抖后的计数。

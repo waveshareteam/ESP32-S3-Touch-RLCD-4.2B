@@ -27,7 +27,7 @@
 #define RLCD_PARAM_BITS     (8)
 #define RLCD_BITS_PER_PIXEL (1)
 
-/* ESP32-S3-Touch-RLCD-4.2 factory demo pin definitions */
+/* ESP32-S3-Touch-RLCD-4.2B factory demo pin definitions */
 #define RLCD_GPIO_SCLK      (GPIO_NUM_11)
 #define RLCD_GPIO_MOSI      (GPIO_NUM_12)
 #define RLCD_GPIO_RST       (GPIO_NUM_41)

@@ -20,7 +20,7 @@
 
 ## 音频与 BSP
 
-硬件操作统一放在 `components/esp32_s3_touch_rlcd_4_2/esp32_s3_touch_rlcd_4_2.c`，公开接口在同组件 `include/bsp/esp32_s3_touch_rlcd_4_2.h`。
+硬件操作统一放在 `components/esp32_s3_touch_rlcd_4_2b/esp32_s3_touch_rlcd_4_2b.c`，公开接口在同组件 `include/bsp/esp32_s3_touch_rlcd_4_2b.h`。
 
 | 信号 | RLCD GPIO |
 | --- | --- |
@@ -71,7 +71,7 @@ idf.py -p COMx flash monitor
 | --- | --- |
 | bootloader/bootloader.bin | 0x0 |
 | partition_table/partition-table.bin | 0x8000 |
-| esp32_s3_touch_rlcd_4_2.bin | 0x10000 |
+| esp32_s3_touch_rlcd_4_2b.bin | 0x10000 |
 | srmodels/srmodels.bin | 0xF10000 |
 
 原 NVS、8 MiB APP 和 7 MiB storage 的位置、大小均保留，在 16 MiB Flash 的剩余尾部加入 960 KiB 的 model 分区。当前只启用“你好小智”模型。新增中文字体及语音常量较大，配置保留指令从 PSRAM 执行、常量留在 Flash，给语音处理留出更多 PSRAM 工作空间。

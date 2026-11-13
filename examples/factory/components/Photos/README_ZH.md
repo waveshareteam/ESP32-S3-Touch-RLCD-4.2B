@@ -85,6 +85,6 @@ idf.py build
 idf.py -p COMx flash monitor
 ```
 
-`COMx` 换成实际串口。应用镜像为 `build/esp32_s3_touch_rlcd_4_2.bin`，首次烧录应通过 `idf.py flash` 同时写入 bootloader 和分区表。
+`COMx` 换成实际串口。应用镜像为 `build/esp32_s3_touch_rlcd_4_2b.bin`，首次烧录应通过 `idf.py flash` 同时写入 bootloader 和分区表。
 
 电脑端测试与辅助转换脚本已移出固件源码，原文件保存在工程上一层的 `backup_before_app_cleanup_20261015.zip`。固件通过 `idf.py build` 编译；实际外设、触摸和运行效果需上板验证。

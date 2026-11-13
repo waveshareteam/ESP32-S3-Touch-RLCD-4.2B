@@ -1,7 +1,7 @@
 idf_component_register(
     SRCS "main.cpp"
     PRIV_REQUIRES
-        esp32_s3_touch_rlcd_4_2
+        esp32_s3_touch_rlcd_4_2b
         brookesia_core
         DrawingBoard
         Games

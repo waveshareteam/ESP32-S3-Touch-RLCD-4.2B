@@ -396,7 +396,7 @@ static void show_page(settings_page_t page)
         break;
     case SETTINGS_ABOUT:
         set_text(ui.title, "About");
-        label(ui.body, "ESP32-S3-Touch-RLCD-4.2", 12, 12, 376, &lv_font_montserrat_16);
+        label(ui.body, "ESP32-S3-Touch-RLCD-4.2B", 12, 12, 376, &lv_font_montserrat_16);
         const char *fields[] = {"Firmware", "ESP-IDF", "MAC", "Flash / PSRAM", "Display"};
         for (unsigned i = 0; i < 5; ++i) {
             ui.values[i] = fact(fields[i], 43 + (int)i * 37, 156, &lv_font_montserrat_12);

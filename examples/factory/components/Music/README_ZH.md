@@ -27,7 +27,7 @@
 
 播放器使用参考 the reference factory application 的 `esp_audio_simple_player 0.9.6` / ESP-GMF 解码架构；改用本地 FILE 回调提供 MP3 流，避免文件名空格、`#` 被当作 URI。ES8311 驱动保持原项目 `esp_codec_dev 1.5.10`。输出固定为 24000 Hz、单声道、16 bit，转换配置在 `sdkconfig` 和 `sdkconfig.defaults`。音量由 Settings 首页的 Volume 调节，首次默认 55，范围 0～100，每档 5；BSP 统一管理，切歌/重开不重置，松手后后台保存以便重启恢复。0 档同时关闭功放和静音，时间仍按正常播放推进。
 
-硬件全部通过 `components/esp32_s3_touch_rlcd_4_2` 的 BSP 接口管理：
+硬件全部通过 `components/esp32_s3_touch_rlcd_4_2b` 的 BSP 接口管理：
 
 - `bsp_audio_playback_open/write/drain/mute/close`：I2S、ES8311、功放；PA 在暂停/退出时关闭。
 - 现有音频引脚：MCLK=16、BCLK=9、LRCLK=45、DOUT=8、PA=46；I2C SDA=13/SCL=14。不初始化麦克风。

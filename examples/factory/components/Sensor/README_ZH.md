@@ -12,8 +12,8 @@
 - `sensor_init/sensor_init.c`：布局、返回按钮、LVGL 刷新定时器、数值格式和无效数据占位。
 - `service/sensor_service.c/.h`：后台采样、线程安全快照及数据结构；不直接调用 LVGL。
 - `assets/image_sensor_mono.c`：I1 图标数组，桌面 64 × 64、标题栏 32 × 32。
-- BSP `esp32_s3_touch_rlcd_4_2.c`：RTC、温湿度初始化、读取及内部校验。
-- BSP `include/bsp/esp32_s3_touch_rlcd_4_2.h`：统一管理日期类型和硬件函数接口；
+- BSP `esp32_s3_touch_rlcd_4_2b.c`：RTC、温湿度初始化、读取及内部校验。
+- BSP `include/bsp/esp32_s3_touch_rlcd_4_2b.h`：统一管理日期类型和硬件函数接口；
   APP 通过 `bsp/esp-bsp.h` 引入，不再拆分传感器头文件和源文件。
 
 ## 硬件与采样
