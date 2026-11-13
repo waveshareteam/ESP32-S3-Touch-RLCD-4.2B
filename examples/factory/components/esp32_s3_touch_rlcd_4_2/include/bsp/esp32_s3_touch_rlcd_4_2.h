@@ -108,8 +108,11 @@ typedef struct {
     int percent;     /* Voltage estimate 0..100; -1 when unavailable. */
 } bsp_battery_info_t;
 
-/* Call init once at startup, before starting APPs. Samples every 500 ms;
- * first result after 10 good samples (~5 s), then 1/4 exponential smoothing.
+/* Call init once at startup, before starting APPs. Samples every 100 ms;
+ * each 20-sample window needs at least 16 valid readings (~2 s).
+ * Uses a trimmed mean, 1/8 exponential smoothing and a 3.0..4.12 V estimate.
+ * Percent changes by at most 1 point per 30 s with 12 mV hysteresis;
+ * at or below 3.3 V, downward changes may follow the estimate immediately.
  * get_info only copies a cache; safe for UI, no ADC access or blocking waits.
  * Returns INVALID_STATE before first result, TIMEOUT if >15 s old.
  * No reliable battery-presence or charging detection is provided. */

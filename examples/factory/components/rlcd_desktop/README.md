@@ -16,7 +16,9 @@ Build and flash the [factory application](../../README.md), then open the corres
 
 ## Expected Result
 
-The desktop polls cached state and updates changed values; GPIO18 press counts switch the expression. Battery percentage is an estimate based on voltage.
+The desktop polls cached state and updates changed values; GPIO18 press counts switch the expression. The BSP samples GPIO4 every 100 ms, restores battery voltage with the x3 divider, and updates its cache from each 20-sample window with at least 16 valid readings, a trimmed mean and 1/8 exponential smoothing.
+
+Battery percentage uses a clamped linear 3.0–4.12 V estimate, 12 mV hysteresis and at most one percentage point per 30 seconds; downward changes can follow the estimate immediately at filtered voltages of 3.3 V or below. The first result takes about two seconds; missing or stale results show `--%`. Each valid window logs mean and filtered voltage, target and displayed percentage, and valid sample count. Charging and load affect this estimate; battery presence and charging state are not detected.
 
 ## Troubleshooting
 

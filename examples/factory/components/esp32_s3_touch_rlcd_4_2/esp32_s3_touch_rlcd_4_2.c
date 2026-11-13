@@ -20,6 +20,7 @@
 #include "esp_adc/adc_cali.h"
 #include "esp_adc/adc_cali_scheme.h"
 #include "bsp_button_debounce.h"
+#include "bsp_battery_filter.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
@@ -120,9 +121,9 @@ esp_err_t bsp_button_get_pressed(bsp_button_id_t id, bool *pressed)
  * Battery: GPIO4 / ADC1 CH3, VBAT -> 200k -> ADC -> 100k -> GND
  **************************************************************************************************/
 #define BSP_BATTERY_ADC_CHANNEL ADC_CHANNEL_3
-#define BSP_BATTERY_SAMPLE_US 500000
-#define BSP_BATTERY_SAMPLE_COUNT 10
-#define BSP_BATTERY_STALE_US (15LL * 1000000)
+#define BSP_BATTERY_SAMPLE_US 100000
+#define BSP_BATTERY_WINDOW_SAMPLES 20
+#define BSP_BATTERY_MIN_VALID_SAMPLES 16
 
 static adc_oneshot_unit_handle_t battery_adc;
 static adc_cali_handle_t battery_calibration;
@@ -130,18 +131,10 @@ static esp_timer_handle_t battery_timer;
 static portMUX_TYPE battery_lock = portMUX_INITIALIZER_UNLOCKED;
 static bsp_battery_info_t battery_cache;
 static int64_t battery_updated_us;
-/* Only the timer callback accesses the accumulator and filter. */
-static int battery_sum_mv, battery_samples, battery_filtered_q4;
 static bool battery_read_error;
-
-static int battery_estimate_percent(int voltage_mv)
-{
-    /* Same voltage-based estimate as the Xiaozhi RLCD-4.2 board.
-     * This is not a coulomb counter; load/charging affects the estimate. */
-    int64_t v = voltage_mv;
-    int percent = (int)((-v * v + 9016 * v - 19189000) / 10000);
-    return percent < 0 ? 0 : percent > 100 ? 100 : percent;
-}
+static bsp_battery_filter_t battery_filter;
+static int battery_sample_count, battery_valid_count, battery_sum_mv;
+static int battery_min_mv = INT_MAX, battery_max_mv;
 
 static void battery_poll(void *unused)
 {
@@ -150,41 +143,51 @@ static void battery_poll(void *unused)
     esp_err_t ret = adc_oneshot_read(battery_adc, BSP_BATTERY_ADC_CHANNEL, &raw);
     if (ret == ESP_OK && (raw <= 0 || raw >= 4095)) ret = ESP_ERR_INVALID_RESPONSE;
     if (ret == ESP_OK) ret = adc_cali_raw_to_voltage(battery_calibration, raw, &adc_mv);
-    int voltage_mv = adc_mv * 3;
+    const int voltage_mv = adc_mv * 3;
     /* Reject invalid electrical readings, not ordinary low battery voltage.
      * This range cannot identify an absent battery when USB is connected. */
     if (ret == ESP_OK && (voltage_mv < 2500 || voltage_mv > 4500)) ret = ESP_ERR_INVALID_RESPONSE;
     if (ret != ESP_OK) {
-        battery_sum_mv = battery_samples = 0;
         if (!battery_read_error) ESP_LOGW(TAG, "Battery sample failed: %s", esp_err_to_name(ret));
         battery_read_error = true;
-        return;
+    } else {
+        battery_read_error = false;
+        ++battery_valid_count;
+        battery_sum_mv += voltage_mv;
+        if (voltage_mv < battery_min_mv) battery_min_mv = voltage_mv;
+        if (voltage_mv > battery_max_mv) battery_max_mv = voltage_mv;
     }
 
-    battery_sum_mv += voltage_mv;
-    if (++battery_samples < BSP_BATTERY_SAMPLE_COUNT) return;
-    voltage_mv = (battery_sum_mv + BSP_BATTERY_SAMPLE_COUNT / 2) / BSP_BATTERY_SAMPLE_COUNT;
-    battery_sum_mv = battery_samples = 0;
-    battery_read_error = false;
-    int64_t now = esp_timer_get_time();
-    bool first = battery_updated_us == 0 || now - battery_updated_us > BSP_BATTERY_STALE_US;
-    if (first) battery_filtered_q4 = voltage_mv * 16;
-    else battery_filtered_q4 += (voltage_mv * 16 - battery_filtered_q4) / 4;
-    bsp_battery_info_t info = {
-        .voltage_mv = (battery_filtered_q4 + 8) / 16,
+    /* Spread conversions across timer callbacks; never sleep or run an ADC
+     * burst in the shared timer task. Invalid readings consume a slot too. */
+    if (++battery_sample_count < BSP_BATTERY_WINDOW_SAMPLES) return;
+    const int valid = battery_valid_count;
+    const int mean_mv = valid >= BSP_BATTERY_MIN_VALID_SAMPLES ?
+        (battery_sum_mv - battery_min_mv - battery_max_mv + (valid - 2) / 2) / (valid - 2) : 0;
+    battery_sample_count = battery_valid_count = battery_sum_mv = 0;
+    battery_min_mv = INT_MAX;
+    battery_max_mv = 0;
+    if (valid < BSP_BATTERY_MIN_VALID_SAMPLES) return;
+
+    const int64_t now = esp_timer_get_time();
+    bsp_battery_filter_update(&battery_filter, mean_mv, now);
+    const bsp_battery_info_t info = {
+        .voltage_mv = bsp_battery_filter_voltage(&battery_filter),
+        .percent = battery_filter.percent,
     };
-    info.percent = battery_estimate_percent(info.voltage_mv);
     portENTER_CRITICAL(&battery_lock);
     battery_cache = info;
     battery_updated_us = now;
     portEXIT_CRITICAL(&battery_lock);
-    if (first) ESP_LOGI(TAG, "Battery: %d mV, estimated %d%%", info.voltage_mv, info.percent);
+    ESP_LOGI(TAG, "Battery: mean=%d mV, filtered=%d mV, target=%d%%, displayed=%d%%, samples=%d/%d",
+             mean_mv, info.voltage_mv, bsp_battery_estimate_percent(info.voltage_mv),
+             info.percent, valid, BSP_BATTERY_WINDOW_SAMPLES);
 }
 
 esp_err_t bsp_battery_init(void)
 {
     /* Startup-only initialization, idempotent after success. No extra task stack.
-     * The shared timer performs one short ADC conversion per callback, without
+     * The shared timer performs one short ADC conversion every 100 ms, without
      * sleeping or retrying; UI readers only access the cached result. */
     if (battery_timer) return ESP_OK;
     const adc_oneshot_unit_init_cfg_t unit = {
@@ -217,7 +220,8 @@ esp_err_t bsp_battery_init(void)
         battery_adc = NULL;
         return ret;
     }
-    ESP_LOGI(TAG, "Battery ADC ready: GPIO%d, divider x3, average every 5 s", BSP_BATTERY_ADC_IO);
+    ESP_LOGI(TAG, "Battery ADC ready: GPIO%d, divider x3, 20 samples/2 s, EMA and percent hysteresis",
+             BSP_BATTERY_ADC_IO);
     return ESP_OK;
 }
 
