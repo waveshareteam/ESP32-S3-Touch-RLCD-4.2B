@@ -179,7 +179,7 @@ static void battery_poll(void *unused)
     battery_cache = info;
     battery_updated_us = now;
     portEXIT_CRITICAL(&battery_lock);
-    ESP_LOGI(TAG, "Battery: mean=%d mV, filtered=%d mV, target=%d%%, displayed=%d%%, samples=%d/%d",
+    ESP_LOGD(TAG, "Battery: mean=%d mV, filtered=%d mV, target=%d%%, displayed=%d%%, samples=%d/%d",
              mean_mv, info.voltage_mv, bsp_battery_estimate_percent(info.voltage_mv),
              info.percent, valid, BSP_BATTERY_WINDOW_SAMPLES);
 }
