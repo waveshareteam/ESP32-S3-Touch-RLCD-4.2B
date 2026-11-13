@@ -12,9 +12,8 @@
     <a href="firmware/">📦 固件</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
-    <a href="docs/images/">📚 资料</a>
+    <a href="examples/factory/README_ZH.md">📚 资料</a>
   </p>
-  <p><img src="docs/images/gallery-preview.png" alt="ESP32-S3-Touch-RLCD-4.2B monochrome gallery UI preview" width="500"></p>
 </div>
 
 ---
@@ -88,7 +87,8 @@ Arduino 公共库位于 [examples/arduino/libraries](examples/arduino/libraries/
 
 ## 🤝 支持
 
-产品和使用问题请联系[微雪技术支持](https://www.waveshare.net/wiki/技术支持)。
+- 示例或仓库问题：请[提交 Issue](https://github.com/waveshareteam/ESP32-S3-Touch-RLCD-4.2B/issues)。
+- 产品使用及硬件问题：请联系[微雪技术支持](https://www.waveshare.net/wiki/技术支持)。
 
 ## 📄 许可证
 
