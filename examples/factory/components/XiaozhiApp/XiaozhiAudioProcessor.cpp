@@ -7,7 +7,9 @@
 #include "XiaozhiAudioProcessor.hpp"
 
 #include <algorithm>
+#include <cstdlib>
 #include <cstring>
+#include <strings.h>
 #include <utility>
 
 #include "esp_heap_caps.h"
@@ -22,6 +24,24 @@ namespace {
 
 constexpr char TAG[] = "XiaozhiAudio";
 constexpr char AFE_INPUT_FORMAT[] = "MMR";
+constexpr char WAKE_WORD[] = "Hi,ESP";
+
+char *findWakeModel(srmodel_list_t *models)
+{
+    for (int i = 0; i < models->num; ++i) {
+        char *name = models->model_name[i];
+        if (strncmp(name, ESP_WN_PREFIX, sizeof(ESP_WN_PREFIX) - 1) != 0) {
+            continue;
+        }
+        char *words = esp_srmodel_get_wake_words(models, name);
+        const bool matches = words && strcasecmp(words, WAKE_WORD) == 0;
+        std::free(words);
+        if (matches) {
+            return name;
+        }
+    }
+    return nullptr;
+}
 
 void logAfeHeap(const char *stage)
 {
@@ -202,7 +222,7 @@ bool XiaozhiAudioProcessor::shutdown()
 
     {
         SemaphoreLock afe_lock(afe_mutex_);
-        if (afe_lock && afe_iface_ && afe_data_) {
+        if (afe_lock && afe_iface_ && afe_data_ && wake_word_available_.load()) {
             afe_iface_->disable_wakenet(afe_data_);
         }
     }
@@ -287,6 +307,9 @@ bool XiaozhiAudioProcessor::enableWakeWord(bool enable)
             !afe_iface_ || !afe_data_) {
         return false;
     }
+    if (!wake_word_available_.load()) {
+        return !enable;
+    }
 
     EventBits_t bits = xEventGroupGetBits(event_group_);
     bool enabled = (bits & EVENT_WAKE_WORD_ENABLED) != 0;
@@ -347,6 +370,11 @@ bool XiaozhiAudioProcessor::enableVoiceProcessing(bool enable)
 bool XiaozhiAudioProcessor::isReady() const
 {
     return ready_.load() && !shutting_down_.load();
+}
+
+bool XiaozhiAudioProcessor::isWakeWordAvailable() const
+{
+    return isReady() && wake_word_available_.load();
 }
 
 size_t XiaozhiAudioProcessor::getFeedFrames() const
@@ -449,30 +477,7 @@ bool XiaozhiAudioProcessor::createAfe()
         models_->num, static_cast<unsigned long>(model_partition->address)
     );
 
-    char *wakenet_model = esp_srmodel_filter(models_, ESP_WN_PREFIX, nullptr);
-    if (!wakenet_model) {
-        ESP_LOGE(TAG, "No WakeNet model found");
-        return false;
-    }
-    wakenet_model_name_ = wakenet_model;
-
-    const char *words = esp_srmodel_get_wake_words(models_, wakenet_model);
-    if (words) {
-        const char *begin = words;
-        while (*begin != '\0') {
-            const char *end = std::strchr(begin, ';');
-            if (!end) {
-                end = begin + std::strlen(begin);
-            }
-            if (end > begin) {
-                wake_words_.emplace_back(begin, static_cast<size_t>(end - begin));
-            }
-            if (*end == '\0') {
-                break;
-            }
-            begin = end + 1;
-        }
-    }
+    char *wakenet_model = findWakeModel(models_);
 
     char *vad_model = esp_srmodel_filter(models_, ESP_VADN_PREFIX, nullptr);
     afe_config_t *config =
@@ -490,7 +495,7 @@ bool XiaozhiAudioProcessor::createAfe()
     if (vad_model) {
         config->vad_model_name = vad_model;
     }
-    config->wakenet_init = true;
+    config->wakenet_init = wakenet_model != nullptr;
     config->wakenet_model_name = wakenet_model;
     config->agc_init = false;
     config->memory_alloc_mode = AFE_MEMORY_ALLOC_MORE_PSRAM;
@@ -508,7 +513,12 @@ bool XiaozhiAudioProcessor::createAfe()
         return false;
     }
 
-    afe_iface_->disable_wakenet(afe_data_);
+    wake_word_available_.store(wakenet_model != nullptr);
+    if (wakenet_model) {
+        afe_iface_->disable_wakenet(afe_data_);
+    }
+    ESP_LOGI(TAG, "Conversation entry: %s",
+             wakenet_model ? WAKE_WORD : "Talk button");
     feed_frames_.store(static_cast<size_t>(afe_iface_->get_feed_chunksize(afe_data_)));
     if (feed_frames_.load() == 0) {
         ESP_LOGE(TAG, "AFE returned an invalid feed size");
@@ -519,7 +529,9 @@ bool XiaozhiAudioProcessor::createAfe()
     input_buffer_.reserve(feed_frames_.load() * INPUT_CHANNELS * 2);
     output_buffer_.clear();
     output_buffer_.reserve(PCM_FRAME_SAMPLES * 2);
-    wake_word_cache_.assign(WAKE_WORD_CACHE_SAMPLES, 0);
+    if (wakenet_model) {
+        wake_word_cache_.assign(WAKE_WORD_CACHE_SAMPLES, 0);
+    }
     wake_word_cache_size_ = 0;
     wake_word_cache_write_ = 0;
     afe_iface_->print_pipeline(afe_data_);
@@ -550,8 +562,7 @@ void XiaozhiAudioProcessor::releaseResources()
         event_group_ = nullptr;
     }
 
-    wake_words_.clear();
-    wakenet_model_name_.clear();
+    wake_word_available_.store(false);
     input_buffer_.clear();
     output_buffer_.clear();
     wake_word_cache_.clear();
@@ -681,19 +692,6 @@ void XiaozhiAudioProcessor::handleWakeWord(const afe_fetch_result_t *result)
         return;
     }
 
-    std::string wake_word = wakenet_model_name_;
-    int model_index = result->wakenet_model_index - 1;
-    if (model_index >= 0 && model_index < static_cast<int>(wake_words_.size())) {
-        wake_word = wake_words_[model_index];
-    } else if (!wake_words_.empty()) {
-        ESP_LOGW(
-            TAG,
-            "Invalid WakeNet model index %d; using the first wake word",
-            result->wakenet_model_index
-        );
-        wake_word = wake_words_.front();
-    }
-
     // Reset only the WakeNet detection state; voice PCM keeps flowing.
     {
         SemaphoreLock afe_lock(afe_mutex_);
@@ -705,10 +703,10 @@ void XiaozhiAudioProcessor::handleWakeWord(const afe_fetch_result_t *result)
         afe_iface_->disable_wakenet(afe_data_);
     }
 
-    ESP_LOGI(TAG, "Wake word detected: %s", wake_word.c_str());
+    ESP_LOGI(TAG, "Wake word detected: %s", WAKE_WORD);
     WakeWordCallback callback = copyWakeWordCallback();
     if (callback) {
-        callback(wake_word);
+        callback(WAKE_WORD);
     }
 }
 

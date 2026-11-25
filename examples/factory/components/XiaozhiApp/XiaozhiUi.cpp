@@ -10,6 +10,9 @@ LV_FONT_DECLARE(font_puhui_20_4);
 
 namespace esp_brookesia::apps {
 namespace {
+constexpr char TALK_HINT[] = "Tap Talk to start.";
+constexpr char WAKE_HINT[] = "Say \"Hi ESP\"\nor tap Talk.";
+
 void plain(lv_obj_t *object)
 {
     lv_obj_remove_style_all(object);
@@ -54,7 +57,7 @@ bool XiaozhiUi::create(lv_obj_t *parent, ActionCallback action, void *context, b
     if (!parent) return false;
     destroy(); _action_callback = action; _context = context;
     _root = box(parent, 0, 0, 400, 300);
-    label(_root, "Xiaozhi AI", 16, 12, 205, &lv_font_montserrat_20);
+    label(_root, "AIChats", 16, 12, 205, &lv_font_montserrat_20);
     _network = label(_root, "Offline", 250, 17, 88, &lv_font_montserrat_12);
     lv_obj_set_style_text_align(_network, LV_TEXT_ALIGN_RIGHT, 0);
     auto *back = lv_button_create(_root); plain(back);
@@ -103,7 +106,7 @@ bool XiaozhiUi::create(lv_obj_t *parent, ActionCallback action, void *context, b
     lv_obj_set_style_bg_color(scroll, lv_color_black(), LV_PART_SCROLLBAR);
     lv_obj_set_style_bg_opa(scroll, LV_OPA_COVER, LV_PART_SCROLLBAR);
     lv_obj_set_style_width(scroll, 3, LV_PART_SCROLLBAR);
-    _chat = label(scroll, "Say \"你好小智\"\nor tap Talk.", 0, 0, 216, &font_puhui_20_4);
+    _chat = label(scroll, TALK_HINT, 0, 0, 216, &font_puhui_20_4);
     lv_obj_set_style_text_line_space(_chat, 4, 0);
 
     _activation = box(_root, 16, 55, 368, 234);
@@ -135,12 +138,13 @@ void XiaozhiUi::setAction(const char *value, bool enabled)
     if (enabled) lv_obj_remove_state(_action, LV_STATE_DISABLED);
     else lv_obj_add_state(_action, LV_STATE_DISABLED);
 }
-void XiaozhiUi::setChatMessage(const char *role, const char *value)
+void XiaozhiUi::setChatMessage(const char *role, const char *value, bool wake_word_available)
 {
     if (!_chat) return;
     const bool empty = !value || !value[0];
     text(_role, empty ? "CONVERSATION" : (role && !strcmp(role, "user") ? "YOU" : "XIAOZHI"));
-    if (text(_chat, empty ? "Say \"你好小智\"\nor tap Talk." : value))
+    const char *hint = wake_word_available ? WAKE_HINT : TALK_HINT;
+    if (text(_chat, empty ? hint : value))
         lv_obj_scroll_to_y(lv_obj_get_parent(_chat), 0, LV_ANIM_OFF);
 }
 void XiaozhiUi::clearChatMessages() { setChatMessage(nullptr, ""); }

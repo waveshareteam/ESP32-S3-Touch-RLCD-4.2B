@@ -15,7 +15,7 @@ public:
     void setNetworkReady(bool ready);
     void setStatus(const char *status);
     void setAction(const char *label, bool enabled);
-    void setChatMessage(const char *role, const char *text);
+    void setChatMessage(const char *role, const char *text, bool wake_word_available = false);
     void clearChatMessages();
     void setEmotion(const char *emotion);
     void setActivation(const char *code, const char *message, bool visible);

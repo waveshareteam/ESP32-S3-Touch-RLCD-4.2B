@@ -125,9 +125,11 @@ Drawings are temporary and are not saved. Reopening the app gives you a blank ca
 
 1. Connect to Wi-Fi as described in Section 2, check that the speaker is connected, and open **AIChats**.
 2. If an activation code appears, follow the on-screen instructions to add the device in the Xiaozhi console and enter the code. After binding, wait for the device to become ready.
-3. Say “**你好小智**” (Ni hao Xiao Zhi), or tap **Talk**, then ask a question such as “What day is it today?”
-4. Finish speaking and wait. Conversation text appears on the screen, and the speaker plays the reply. Tap **Stop** to end the interaction, or use the wake word to interrupt a reply.
-5. Tap the upper-right back arrow to exit. The board stops listening for the wake word after you leave the app.
+3. Say **Hi ESP** or tap **Talk**, then ask a question such as “What day is it today?”
+4. Finish speaking and wait. The screen shows the conversation and the speaker plays the reply. Say **Hi ESP** again to interrupt a reply, or tap **Stop** to end the conversation.
+5. Tap the back arrow at the upper right to exit. The wake word works only while AIChats is open.
+
+The merged factory image includes the speech model. If you build from source and the standby screen shows only **Tap Talk to start.**, use `idf.py flash` to flash the application and speech model together. The Xiaozhi service controls the reply language.
 
 If you cannot hear a reply, raise the Settings volume, make sure it is not 0, and check the speaker. For network errors, check that your Wi-Fi has Internet access.
 

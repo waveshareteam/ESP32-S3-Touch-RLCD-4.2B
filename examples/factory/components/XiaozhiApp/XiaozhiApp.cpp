@@ -703,7 +703,9 @@ void XiaozhiApp::refreshUi()
     _ui->setStatus(stateText(state));
     const bool talking = state == State::Listening || state == State::Processing || state == State::Speaking;
     _ui->setAction(talking ? "Stop" : "Talk", talking || state == State::Ready);
-    _ui->setChatMessage(role, text);
+    _ui->setChatMessage(
+        role, text, _audio_processor && _audio_processor->isWakeWordAvailable()
+    );
     _ui->setEmotion(emotion[0] ? emotion : "neutral");
     _ui->setActivation(
         code,
@@ -822,8 +824,7 @@ bool XiaozhiApp::playReadyPromptOnce()
     if (_ready_prompt_played.exchange(true)) {
         return true;
     }
-    if (!_activation_prompt || !canPrepare()) {
-        ESP_UTILS_LOGW("Xiaozhi ready prompt is unavailable");
+    if (!_activation_prompt || !canPrepare() || !XiaozhiActivationPrompt::hasSuccessPrompt()) {
         return false;
     }
 
@@ -1195,7 +1196,7 @@ void XiaozhiApp::handleControlEvent(const ControlEvent &event)
         closeChannel(false);
         if (_network_ready.load() && _transport_connected) {
             ESP_UTILS_LOGI(
-                "Server ended the conversation; wake-word standby restored"
+                "Server ended the conversation; standby restored"
             );
             setState(State::Ready);
             enterReadyAudioMode();
@@ -2068,6 +2069,7 @@ bool XiaozhiApp::releaseAudioSession()
 
 bool XiaozhiApp::setAudioModes(bool wake_word, bool voice)
 {
+    wake_word = wake_word && _audio_processor && _audio_processor->isWakeWordAvailable();
     _capture_enabled.store(false);
     _input_resampler_reset_requested.store(true);
     _uplink_ready.store(false);
