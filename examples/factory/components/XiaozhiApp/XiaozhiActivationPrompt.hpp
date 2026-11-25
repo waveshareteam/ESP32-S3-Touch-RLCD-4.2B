@@ -24,6 +24,7 @@ public:
     XiaozhiActivationPrompt &operator=(const XiaozhiActivationPrompt &) = delete;
 
     bool start(const char *activation_code, bool force);
+    static bool hasSuccessPrompt();
     bool playSuccess();
     void cancel();
     bool waitUntilIdle(uint32_t timeout_ms) const;

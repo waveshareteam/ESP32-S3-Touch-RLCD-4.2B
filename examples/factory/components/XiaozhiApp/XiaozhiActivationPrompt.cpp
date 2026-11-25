@@ -6,10 +6,12 @@
 
 #include "XiaozhiActivationPrompt.hpp"
 
+#include <errno.h>
 #include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "bsp/esp-bsp.h"
 #include "decoder/impl/esp_opus_dec.h"
@@ -31,7 +33,15 @@ constexpr size_t PCM_MONO_BUFFER_SIZE =
     SAMPLE_RATE * FRAME_DURATION_MS / 1000 * sizeof(int16_t);
 constexpr size_t PCM_STEREO_BUFFER_SIZE = PCM_MONO_BUFFER_SIZE * 2;
 constexpr size_t MAX_OGG_FILE_SIZE = 64 * 1024;
+constexpr char ACTIVATION_PROMPT_PATH[] = BSP_SPIFFS_MOUNT_POINT "/xiaozhi/activation.ogg";
+constexpr char SUCCESS_PROMPT_PATH[] = BSP_SPIFFS_MOUNT_POINT "/xiaozhi/success.ogg";
 constexpr char PROMPT_DIRECTORY[] = BSP_SPIFFS_MOUNT_POINT "/xiaozhi";
+
+bool promptExists(const char *path)
+{
+    struct stat info = {};
+    return stat(path, &info) == 0 && S_ISREG(info.st_mode) && info.st_size > 0;
+}
 
 } // namespace
 
@@ -56,7 +66,8 @@ XiaozhiActivationPrompt::~XiaozhiActivationPrompt()
 
 bool XiaozhiActivationPrompt::start(const char *activation_code, bool force)
 {
-    if (!activation_code || !activation_code[0] || !_mutex) {
+    if (!activation_code || !activation_code[0] || !_mutex ||
+            !promptExists(ACTIVATION_PROMPT_PATH)) {
         return false;
     }
 
@@ -101,6 +112,11 @@ bool XiaozhiActivationPrompt::start(const char *activation_code, bool force)
         return false;
     }
     return true;
+}
+
+bool XiaozhiActivationPrompt::hasSuccessPrompt()
+{
+    return promptExists(SUCCESS_PROMPT_PATH);
 }
 
 bool XiaozhiActivationPrompt::playSuccess()
@@ -270,7 +286,9 @@ void XiaozhiActivationPrompt::run()
 
             FILE *file = fopen(path, "rb");
             if (!file) {
-                ESP_UTILS_LOGE("Unable to open prompt: %s", path);
+                if (errno != ENOENT && errno != ENOTDIR) {
+                    ESP_UTILS_LOGE("Unable to open prompt: %s (errno=%d)", path, errno);
+                }
                 return false;
             }
             if (fseek(file, 0, SEEK_END) != 0) {
@@ -357,11 +375,9 @@ void XiaozhiActivationPrompt::run()
 
         char path[96] = {};
         if (play_success) {
-            snprintf(path, sizeof(path), "%s/success.ogg", PROMPT_DIRECTORY);
-            completed = play_file(path);
+            completed = play_file(SUCCESS_PROMPT_PATH);
         } else {
-            snprintf(path, sizeof(path), "%s/activation.ogg", PROMPT_DIRECTORY);
-            completed = play_file(path);
+            completed = play_file(ACTIVATION_PROMPT_PATH);
             for (const char *digit = activation_code;
                     completed && *digit && shouldContinue();
                     ++digit) {

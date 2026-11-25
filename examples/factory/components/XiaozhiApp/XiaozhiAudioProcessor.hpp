@@ -57,6 +57,7 @@ public:
     bool enableVoiceProcessing(bool enable);
 
     bool isReady() const;
+    bool isWakeWordAvailable() const;
 
     /** Number of frames per channel preferred by one AFE feed call. */
     size_t getFeedFrames() const;
@@ -98,8 +99,7 @@ private:
     std::atomic<bool> shutting_down_{false};
     std::atomic<size_t> feed_frames_{0};
 
-    std::vector<std::string> wake_words_;
-    std::string wakenet_model_name_;
+    std::atomic<bool> wake_word_available_{false};
     std::vector<int16_t> input_buffer_;
     std::vector<int16_t> output_buffer_;
     std::vector<int16_t> wake_word_cache_;
