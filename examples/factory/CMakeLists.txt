@@ -12,3 +12,10 @@ if(TARGET __idf_espressif__mcp-c-sdk AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
     target_compile_options(__idf_espressif__mcp-c-sdk PRIVATE
         -Wno-error=stringop-truncation)
 endif()
+
+if(TARGET __idf_espressif__esp-boost AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+        AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 15)
+    # Boost's legacy variadic templates trigger this diagnostic in C++26 mode.
+    target_compile_options(__idf_espressif__esp-boost PRIVATE
+        $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=deprecated-variadic-comma-omission>)
+endif()
