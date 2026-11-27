@@ -12,7 +12,7 @@
     <a href="firmware/">📦 固件</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
-    <a href="examples/factory/README_ZH.md">📚 资料</a>
+    <a href="https://docs.waveshare.net/ESP32-S3-Touch-RLCD-4.2B/">📚 资料</a>
   </p>
   <p><img src="docs/images/esp32-s3-touch-rlcd-4.2b.png" alt="ESP32-S3-Touch-RLCD-4.2B 开发板" width="500"></p>
 </div>
