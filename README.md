@@ -8,12 +8,13 @@
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/waveshareteam/ESP32-S3-Touch-RLCD-4.2B"></a>
   </p>
   <p>
-    <a href="https://www.waveshare.com/">🌐 Product</a> &middot;
+    <a href="https://www.waveshare.net/shop/ESP32-S3-Touch-RLCD-4.2B.htm">🌐 Product</a> &middot;
     <a href="firmware/">📦 Firmware</a> &middot;
     <a href="examples/esp-idf/">🧩 ESP-IDF</a> &middot;
     <a href="examples/arduino/examples/">🔧 Arduino</a> &middot;
-    <a href="examples/factory/README.md">📚 Documentation</a>
+    <a href="https://docs.waveshare.net/ESP32-S3-Touch-RLCD-4.2B/">📚 Documentation</a>
   </p>
+  <p><img src="docs/images/esp32-s3-touch-rlcd-4.2b.png" alt="ESP32-S3-Touch-RLCD-4.2B development board" width="500"></p>
 </div>
 
 ---
@@ -81,7 +82,7 @@ Versions and board options are recorded in [.github/product.json](.github/produc
 
 - [Schematic](hardware/schematic/)
 - [Dimensions and 3D model](hardware/mechanical/)
-- [Official product website](https://www.waveshare.com/)
+- [Official product page](https://www.waveshare.net/shop/ESP32-S3-Touch-RLCD-4.2B.htm)
 - [ESP-IDF examples](examples/esp-idf/)
 - [Arduino examples](examples/arduino/examples/)
 
